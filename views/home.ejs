@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Typing Test Setup</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        form { max-width: 400px; margin: auto; }
+        label { display: block; margin-top: 20px; }
+        select, button { width: 100%; padding: 8px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Typing Test Setup</h1>
+    <form action="/typetest" method="POST">
+        <label for="level">Level:</label>
+        <select id="level" name="level" required>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+            <option value="Pro">Pro</option>
+        </select>
+
+        <label for="time">Time:</label>
+        <select id="time" name="time" required>
+            <option value="30">30s</option>
+            <option value="60">60s</option>
+            <option value="120">120s</option>
+            <option value="180">180s</option>
+        </select>
+
+        <label for="keys">Give Test only from the keys in:</label>
+        <select id="keys" name="keys" required>
+            <option value="Home_row">Home row</option>
+            <option value="Top_row">Top Row</option>
+            <option value="Bottom_row">Bottom Row</option>
+            <option value="Punctuations_numbers">Punctuations and Numbers</option>
+            <option value="Overall_keyboard">Overall Keyboard</option>
+        </select>
+
+        <label for="emphasis">Emphasis on:</label>
+        <select id="emphasis" name="emphasis" required>
+            <option value="Home_row">Home row</option>
+            <option value="Top_row">Top Row</option>
+            <option value="Bottom_row">Bottom Row</option>
+            <option value="Punctuations_numbers">Punctuations and Numbers</option>
+            <option value="Overall_keyboard">Overall Keyboard Equally</option>
+        </select>
+        
+        <label for="random">Random or Readable Text?</label>
+        <select id="random" name="random" required>
+            <option value="Random">Random</option>
+            <option value="RealLife">Readable</option>
+        </select>
+
+        <button type="submit" style="margin-top: 30px;">Start Test</button>
+    </form>
+</body>
+</html></select>

@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>TypeTest</title>
+    <link rel="icon" href="/assets/logo.png" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <link href="/assets/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="type-table">
+        <div class="lines">
+            <input type="text" id="TypeInput" name="TypeInput" placeholder="Start Typing..." autocomplete="on" /> 
+             <!-- onpaste="return false" /> -->
+        </div>
+        <div class="lines">
+            <div id="timer" style="font-size:24px;margin-top:10px;">60</div>
+        </div>
+        <div class="lines">
+            <button type="button" id="startButton">Start</button>
+        </div>
+        <p><%=Test%></p>
+    </div>
+
+    <script type="text/javascript" src="/assets/typeajax.js"></script>
+</body>
+</html>
