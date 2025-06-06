@@ -15,6 +15,8 @@ app.set('view engine', 'ejs');
 
 // Static files
 app.use(express.static(__dirname+'/public'));
+app.use(express.static('public'))
+
 
 // Fire controller
 typingController(app);
@@ -22,4 +24,5 @@ typingController(app);
 // Listen to port
 app.listen(PORT)
 console.log("You are listening to port "+PORT)
+console.log(`Go to: http://localhost:${PORT}/`)
 

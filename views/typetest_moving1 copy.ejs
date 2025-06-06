@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Typing Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=WDXL+Lubrifont+TC&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      background: linear-gradient(to top, #7272ed, rgba(0,0,0,0.8));
+      color: white;
+      font-family: "Courier New", monospace;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, #7272ed, rgba(0,0,0,0.8));
+      z-index: -1;
+    }
+    .Page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem;
+    }
+    .header-title {
+      font-size: 5rem;
+      margin-bottom: 2rem;
+    }
+    .timer {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      color: rgb(77,238,234);
+    }
+    .text-flow {
+      font-size: 2rem;
+      max-width: 80%;
+      flex-wrap: wrap;
+      display: flex;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      background: rgba(0,0,0,0.6);
+      border-radius: 1rem;
+      line-height: 2.5rem;
+    }
+    .text-flow span {
+      white-space: pre;
+    }
+    .correct {
+      color: lightgreen;
+    }
+    .incorrect {
+      color: red;
+    }
+    .input-box {
+      padding: 1rem;
+      font-size: 2rem;
+      width: 60%;
+      border-radius: 1rem;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: yellow;
+      outline: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="Page">
+    <div class="header-title">TypeFlow_</div>
+    <div class="timer" id="timer">60</div>
+    <input type="text" id="typingInput" class="input-box" autocomplete="off" autofocus />
+    <div class="text-flow" id="textDisplay"></div>
+    <div id="hide">This will hide in </div>
+  </div>
+
+<script>
+  const l = 50;
+  const text = <%- JSON.stringify(Test) %>;
+  const display = document.getElementById("textDisplay");
+  display.style.overflow = "hidden";
+  display.style.width = "100ch";
+  // display.style.height = "1ch";
+  display.style.whiteSpace = "nowrap";
+  const input = document.getElementById("typingInput");
+  const timer = document.getElementById("timer");
+  let charIndex = 0;
+  let time = 600;
+  let intervalStarted = false;
+  let offset = 0;
+
+  const spans = [];
+
+  for (let i = 0; i < text.length; i++) {
+    const span = document.createElement("span");
+    span.innerText = text[i];
+    spans.push(span);
+  }
+
+  function renderWindow(start) {
+    display.innerHTML = "";
+
+
+    for (let i = start; i < start+l && i < spans.length; i++) {
+      display.appendChild(spans[i]);
+  }
+ 
+
+  }
+
+  renderWindow(offset);
+
+  function startTimer() {
+    const interval = setInterval(() => {
+      if (time <= 0) {
+        clearInterval(interval);
+        input.disabled = true;
+      }
+      timer.textContent = time;
+      time--;
+    }, 1000);
+  }
+
+  input.addEventListener("keydown", (e) => {
+    if (!intervalStarted) {
+      intervalStarted = true;
+      startTimer();
+    }
+
+    if (e.key === "Backspace") {
+      if (charIndex > 0) {
+        charIndex--;
+        spans[charIndex].classList.remove("correct", "incorrect");
+        if (charIndex < offset) {
+          offset -= l;
+          renderWindow(offset);
+        }
+      }
+      return;
+    }
+
+    if (charIndex >= text.length || e.key.length !== 1) return;
+
+    if (e.key === text[charIndex]) {
+      spans[charIndex].classList.add("correct");
+    } else {
+      spans[charIndex].classList.add("incorrect");
+    }
+
+    charIndex++;
+
+    if (charIndex%(l/2) ==  0) {
+      offset += l;
+      renderWindow(charIndex);
+    }
+  });
+</script>
+</body>
+</html>

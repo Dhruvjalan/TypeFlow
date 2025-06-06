@@ -1,62 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Typing Test Result</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .result-container {
-            background: #fff;
-            max-width: 400px;
-            margin: 60px auto;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .result-container h1 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .result {
-            font-size: 1.2em;
-            margin: 15px 0;
-        }
-        .btn {
-            display: inline-block;
-            margin-top: 25px;
-            padding: 10px 24px;
-            background: #0078d7;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 1em;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #005fa3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Typing Test Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=WDXL+Lubrifont+TC&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: linear-gradient(to top, #7272ed, rgba(0,0,0,0.8));
+      background-repeat: repeat-y;
+      background-size: 100% auto;
+      color: yellow;
+      font-family: "Courier New", monospace;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, #7272ed, rgba(0,0,0,0.8));
+      z-index: -1;
+    }
+
+    .Page1 {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header-title {
+      font-size: 5rem;
+      margin-top: 4rem;
+      margin-bottom: 2rem;
+      color: white;
+    }
+
+    .ResultCardContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      
+      
+    }
+
+    .TextCard {
+      border-radius: 1rem;
+      padding: 2rem 3rem;
+      margin: 1.5rem;
+      color: white;
+      width: 80vw;
+      
+    }
+
+    .ResultGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      
+    }
+
+    .metric {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      text-align: center;
+      border-style: solid;
+      border-color: yellow;
+      border-width: 0.2rem
+    }
+
+    .metric-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      color: rgb(77,238,234);
+      font-size: 2rem;
+    }
+    
+
+    .minor {
+      opacity: 0.6;
+    }
+
+    .comparision{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .text-motiv{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .extra{
+      grid-column: span 2;
+    }
+    
+    #Animal{
+        font-size: 5rem;
+        font-family: "Bebas Neue", sans-serif;
+    
+    }
+    #desc{
+        font-size: 2rem;
+      color: rgb(77,238,234);
+    }
+    img{
+        width:20rem;
+        height: 20rem        
+
+    }
+  </style>
 </head>
 <body>
-    <div class="result-container">
-        <h1>Typing Test Result</h1>
-        <div class="result">
-            <strong>Words Per Minute (WPM):</strong> <%= evaluation.wpm %>
+  <div class="Page1">
+    <h1 class="header-title">Your Results</h1>
+    <div class="ResultCardContainer">
+      <div class="">
+        <div class="TextCard ResultGrid">
+
+          <div class="metric">
+            <div class="metric-title">WPM</div>
+            <div class="metric-value"><%= evaluation.wpm %></div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-title">Word Accuracy %</div>
+            <div class="metric-value"><%= evaluation.wordAccuracy %></div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-title">Time Taken (s)</div>
+            <div class="metric-value"><%= evaluation.time %></div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-title">Level</div>
+            <div class="metric-value"><%= evaluation.level %></div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-title">Keys Practiced</div>
+            <div class="metric-value"><%= evaluation.keys %></div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-title">Emphasis</div>
+            <div class="metric-value"><%= evaluation.emphasis %></div>
+          </div>
+
+          <div class="metric minor">
+            <div class="metric-title">Character Per Minute</div>
+            <div class="metric-value"><%= evaluation.cpm %></div>
+          </div>
+
+          <div class="metric minor">
+            <div class="metric-title">Character Accuracy %</div>
+            <div class="metric-value"><%= evaluation.charAccuracy %></div>
+          </div>
+
+          <div class="metric minor">
+            <div class="metric-title">Test Type %</div>
+            <div class="metric-value"><%= evaluation.random %></div>
+          </div>
+
+          <div class="metric minor extra">
+            <div class="metric-title" id = "Animal">Character Per Minute</div>
+            <div class="metric-value" id="desc"><%= evaluation.cpm %></div>
+          </div>
+
+         
+          <div class="metric minor">
+            <img src = "" />
+          </div>
+
         </div>
-        <div class="result">
-            <strong>Accuracy:</strong> <%= evaluation.wordAccuracy %>%
-        </div>
-        <div class="result">
-            <strong>Time Taken:</strong> 60 seconds
-        </div>
-        <a href="/typetest" class="btn">Try Again</a>
+      </div>
     </div>
+    
+</div>
+
+
+<script>
+    const animalElement = document.getElementById("Animal")
+    const descElement = document.getElementById("desc")
+    const imgElement = document.querySelector("img")
+
+    const word_per_minute = <%= evaluation.wpm %> ;
+
+    if (word_per_minute <= 30) {
+      animalElement.textContent = "Snail"
+      descElement.textContent = "Slow but steady. Like a snail, your pace is deliberate and consistent, laying a solid foundation."
+      imgElement.src = "/assets/images/snail.png"
+      imgElement.alt = "Snail"
+    } else if (word_per_minute <= 40) {
+      animalElement.textContent = "Octopus"
+      descElement.textContent = "Smart and adaptable. Like an octopus, your typing shows flexibility and evolving skill."
+      imgElement.src = "https://cdn-icons-png.flaticon.com/512/616/616499.png"
+      imgElement.alt = "Octopus"
+    } else {
+      animalElement.textContent = "T-Rex"
+      descElement.textContent = "Fast and dominant. Like a T-Rex, your typing speed is fierce and commanding."
+      imgElement.src = "/assets/images/trex.png"
+      imgElement.alt = "T-Rex"
+    }
+  </script>
+
 </body>
-</html></div>
+
+
+</html>

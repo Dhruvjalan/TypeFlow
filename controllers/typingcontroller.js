@@ -1,4 +1,5 @@
 import bodyParser from "body-parser";
+import e from "express";
 import fs from 'fs'
 import { type } from "os";
 import path from 'path'
@@ -13,7 +14,7 @@ var Test
 var urlencodedParser = bodyParser.urlencoded({extended: true});
 
 let level = 0
-function evaluateTypingTest(askedText, givenText, t) {
+function evaluateTypingTest(askedText, givenText, t, level, keys, emphasis, random) {
     let askedWords = askedText.trim().split(/\s+/)
     let givenWords = givenText.trim().split(/\s+/)
 
@@ -55,7 +56,12 @@ function evaluateTypingTest(askedText, givenText, t) {
         wordAccuracy: wordAccuracy.toFixed(2),
         charAccuracy: charAccuracy.toFixed(2),
         errorCount: errorCount,
-        netWpm: netWpm.toFixed(2)
+        netWpm: netWpm.toFixed(2),
+        time: t,
+        level: level,
+        keys: keys,
+        emphasis: emphasis,
+        random:random
     }
 }
 
@@ -75,7 +81,7 @@ export default function typingController(app){
 
     app.post('/typetest',urlencodedParser,(req,res)=>{
         const level = req.body.level
-        const time = req.body.time
+        const time2 = req.body.time
         const keys = req.body.keys 
         const emphasis = req.body.emphasis
         const random = req.body.random
@@ -87,9 +93,9 @@ export default function typingController(app){
         try {
             const jsonObject = JSON.parse(rawData)
             Test = jsonObject[level][keys][emphasis][random]
-            res.render('typetest',{Test})
+            res.render('typetest',{Test,level,time2,keys,emphasis,random})
 
-            console.log("Keys ",keys)
+            // console.log("Keys ",keys)
         } catch (parseErr) {
             console.error('Error parsing JSON:', parseErr)
         }
@@ -101,9 +107,15 @@ export default function typingController(app){
 
     app.get('/typetest/result',(req,res)=>{
         const typedText = req.query.TypedText
+
         console.log(typedText)
-        const temp= "The quick brown fox jumps over the lazy dog. Consistent practice builds muscle memory. Numbers like 123 and symbols like @#$ appear often. Consistent practice builds muscle memory. Shortcuts like Ctrl+C and Ctrl+V save time. Real world typing includes unexpected challenges. Consistent practice builds muscle memory. Numbers like 123 and symbols like @#$ appear often. Real world typing includes unexpected challenges. Emails and reports need both speed and accuracy. Quotes like 'Stay hungry, stay foolish' inspire. Typing fast is a useful skill in modern workspaces. Use commas, periods, and question marks correctly. Emails and reports need both speed and accuracy. Use commas, periods, and question marks correctly. The quick brown fox jumps over the lazy dog. Typing fast is a useful skill i"
-        let evaluation = evaluateTypingTest(Test,typedText ,60)
+        const level = req.query.lvl;
+        const time = req.query.time;
+        const keys = req.query.keys;
+        const emphasis = req.query.emph;  
+        const random = req.query.random;
+        let evaluation = evaluateTypingTest(Test,typedText ,time,level,keys,emphasis,random
+        )
         console.log('WPM',evaluation.wpm)
         console.log("Text",typedText)
         res.render('typeresult',{evaluation})

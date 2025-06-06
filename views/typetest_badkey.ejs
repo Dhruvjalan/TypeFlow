@@ -108,7 +108,7 @@
 <body>
   <div class="Page">
     <div class="header-title">TypeFlow_</div>
-    <div class="timer" id="timer"><%=time2%></div>
+    <div class="timer" id="timer">60</div>
     <input type="text" id="typingInput" class="input-box" autocomplete="off" autofocus />
     <div class="text-flow" id="textDisplay"></div>
     <div class="TextCard ResultGrid">
@@ -125,29 +125,25 @@
   </div>
 
 <script>
-  const l = 40; 
-  let text = <%- JSON.stringify(Test) %>;
-  let display = document.getElementById("textDisplay");
+  const l = 50;
+  const text = <%- JSON.stringify(Test) %>;
+  const display = document.getElementById("textDisplay");
   display.style.overflow = "hidden";
-  display.style.width = "40ch";
+  display.style.width = "100";
+  display.style.height = "100";
   display.style.whiteSpace = "nowrap";
-  let input = document.getElementById("typingInput");
-  let timer = document.getElementById("timer");
-  let inst_wpm = document.getElementById("inst-wpm");
-  let inst_acc = document.getElementById("inst-acc");
+  const input = document.getElementById("typingInput");
+  const timer = document.getElementById("timer");
+  inst_wpm = document.getElementById("inst-wpm");
+  inst_acc = document.getElementById("inst-acc");
   let charIndex = 0;
-  let level = "<%=level%>";
-  let time_str = "<%=time2%>";
-  let time = Number(time_str)
-  let keys = "<%=keys%>";
-  let emphasis = "<%=emphasis%>";
-  let random = "<%=random%>";
+  let time = 600;
   let intervalStarted = false;
   let offset = 0;
   let total = 0;
   let total_ref = 0
   let correct = 0;
-  let space_ref=1
+  let space_ref=0
 
   const spans = [];
 
@@ -175,97 +171,75 @@
       if (time <= 0) {
         clearInterval(interval);
         input.disabled = true;
-        const typed = encodeURIComponent(input.value);
-        const encode_level = encodeURIComponent(level);
-        const encode_time = time_str;
-        const encode_keys = encodeURIComponent(keys);
-        const encode_emphasis = encodeURIComponent(emphasis);
-        const encode_random = encodeURIComponent(random);
-        window.location.href = `/typetest/result?TypedText=${typed}&lvl=${encode_level}&time=${encode_time}&keys=${encode_keys}&emph=${encode_emphasis}&random=${encode_random}`;
       }
       timer.textContent = time;
-      
-      if (time % 3 === 0) {
-          if (total > 0) {
-            inst_acc.textContent = `${(100 * correct / total).toFixed(2)} %`;
-          } else {
-            inst_acc.textContent = `0 %`;
-          }
-
-          if (space_ref > 0) {
-            inst_wpm.textContent = `${((total-total_ref) * 20 / space_ref).toFixed(2)} WPM`;
-          } else {
-            inst_wpm.textContent = `0 WPM`;
-          }
-
-          total_ref = total;
-          space_ref = 1;
-       }
-
+      if(timer%3==0){
+        total_ref=total
+        space_ref=0
+      }
       time--;
     }, 1000);
   }
-//block that controls charIndex
+
   input.addEventListener("keydown", (e) => {
-    
+    if(charIndex==0){
+      spans[charIndex].classList.add('current')
+    }else{
+      spans[charIndex+1].classList.add('current')
+    }
+
     if (!intervalStarted) {
       intervalStarted = true;
       startTimer();
     }
-    
-    if(e.key === 'Backspace'){
+
+    if(e.key==' '){
+      space_ref+=1
+    }
+    if (e.key === "Backspace") {
       
-      if(charIndex<=0){
-        //
-      }
-      else{charIndex-- ; 
-          total--
-          if(spans[charIndex+1].classList.contains('correct')){
-            correct--
-          }
 
-          spans[charIndex+1].classList.remove('correct','incorrect','current')
-          spans[charIndex].classList.remove('correct','incorrect','current')
-          spans[charIndex].classList.add('current')
-      }
+      if (charIndex > 0) {
+        spans[charIndex].classList.remove('current')
+        charIndex--;
+        spans[charIndex].classList.add('current')
 
-      if (charIndex < offset) {
+        if(spans[charIndex+1].classList.contains('correct')){
+          correct-=1;
+        }
+        spans[charIndex].classList.remove("correct", "incorrect","current");
+        total-=1;
+
+        if (charIndex < offset) {
           offset -= l;
           renderWindow(offset);
         }
-
-    }else if (e.key.length>1){
-      //
+      }
+      return;
     }
-    else{
-      charIndex++
-      total++
-      spans[charIndex].classList.add('current')
 
-      if(e.key == text[charIndex-1]){
-        spans[charIndex-1].classList.remove('current')
-        spans[charIndex-1].classList.add('correct') 
-        correct++
-      }
-      else{
-        spans[charIndex-1].classList.remove('current')
-        spans[charIndex-1].classList.add('incorrect')
-      }
+    if (charIndex >= text.length || e.key.length !== 1) {return};
 
-      if (e.key == ' '){
-        space_ref++
-      }
+    if (e.key === text[charIndex]) {
+      spans[charIndex].classList.add("correct");
+      spans[charIndex].classList.remove("current",'incorrect');
+      correct+=1
+    } else {
+      spans[charIndex].classList.add("incorrect");
+      spans[charIndex].classList.remove("current");
+    }
 
-    
+    charIndex++;
+
     if (charIndex%(l/2) ==  0) {
       offset += l;
       renderWindow(charIndex);
     }
 
+    total+=1
 
-    
-
-    }
+    inst_acc.textContent = `${(100*correct/(total)).toFixed(2)} %`;
+    inst_wpm.textContent = `${((total-total_ref)*20/space_ref).toFixed(2)} WPM`
   });
 </script>
 </body>
