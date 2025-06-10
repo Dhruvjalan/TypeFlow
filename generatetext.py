@@ -1,61 +1,85 @@
 import random
-import string
 import json
 
-# Define categories
+# Define the options from your HTML
 levels = ["Beginner", "Intermediate", "Advanced", "Pro"]
-key_areas = ["Home_row", "Top_row", "Bottom_row", "Punctuations_numbers", "Overall_keyboard"]
-emphasis = ["Home_row", "Top_row", "Bottom_row", "Punctuations_numbers", "Overall_keyboard"]
-types = ["Random", "RealLife"]
+keys_options = [
+    "Overall_keyboard", "Home_row", "Top_row", "Bottom_row", "Punctuations_numbers"
+]
+emphasis_options = [
+    "Overall_keyboard", "Home_row", "Top_row", "Bottom_row", "Punctuations_numbers"
+]
+randreal_options = ["RealLife", "Random"]
 
-# Character pools for key areas
-key_pools = {
-    "Home_row": "asdfghjkl",
-    "Top_row": "qwertyuiop",
-    "Bottom_row": "zxcvbnm",
-    "Punctuations_numbers": string.punctuation + string.digits,
-    "Overall_keyboard": string.ascii_letters + string.punctuation + string.digits + " "
+# Keyboard layouts for each key option
+keyboard_rows = {
+    "Top_row": list("qwertyuiop"),
+    "Home_row": list("asdfghjkl"),
+    "Bottom_row": list("zxcvbnm"),
+    "Punctuations_numbers": list("1234567890!@#$%^&*()_+-=[]{};:'\",.<>/?\\|"),
+    "Overall_keyboard": list("qwertyuiopasdfghjklzxcvbnm1234567890!@#$%^&*()_+-=[]{};:'\",.<>/?\\|")
 }
 
-# RealLife sample sentences
-real_life_sentences = [
+# Lengths for each level
+level_lengths = {
+    "Beginner": 3,
+    "Intermediate": 5,
+    "Advanced": 6,
+    "Pro": 7
+}
+
+# RealLife sentences pool (add more as needed)
+reallife_sentences = [
     "The quick brown fox jumps over the lazy dog.",
-    "Typing fast is a useful skill in modern workspaces.",
-    "Numbers like 123 and symbols like @#$ appear often.",
-    "Emails and reports need both speed and accuracy.",
     "Always proofread your work before submission.",
+    "Consistent practice builds muscle memory.",
     "Shortcuts like Ctrl+C and Ctrl+V save time.",
     "Use commas, periods, and question marks correctly.",
-    "Real world typing includes unexpected challenges.",
+    "Numbers like 123 and symbols like @#$ appear often.",
+    "Emails and reports need both speed and accuracy.",
     "Quotes like 'Stay hungry, stay foolish' inspire.",
-    "Consistent practice builds muscle memory."
+    "Typing fast is a useful skill in modern workspaces.",
+    "Real world typing includes unexpected challenges."
 ]
 
-# Function to generate a long text
-def generate_text(area, text_type):
-    if text_type == "Random":
-        chars = key_pools[area]
-        length = 4000  # approx for > 180s at high speeds
-        return ''.join(random.choices(chars, k=length))
-    else:
-        return ' '.join(random.choices(real_life_sentences, k=200))
+# Function to generate random string with spaces
+def random_string(chars, space, total_len=300):
+    s = ""
+    for n in range(total_len):
+        if n % space == 0 and n != 0:
+            s += " "
+        else:
+            s += random.choice(chars).upper() if random.random() > 0.5 else random.choice(chars)
+    return s
 
-# Build the nested object
-typing_tests = {}
+# Function to generate a readable string (mixing sentences and a few random chars)
+def reallife_string(sentences, chars, total_len=300):
+    out = []
+    while len(" ".join(out)) < total_len:
+        # Pick a sentence and randomly replace a few letters with chars from the row
+        sent = random.choice(sentences)
+        sent_list = list(sent)
+        for _ in range(random.randint(1, 3)):
+            idx = random.randint(0, len(sent_list) - 1)
+            sent_list[idx] = random.choice(chars)
+        out.append("".join(sent_list))
+    return " ".join(out)[:total_len]
 
+# Build the nested dictionary
+typing_text = {}
 for level in levels:
-    typing_tests[level] = {}
-    for area in key_areas:
-        typing_tests[level][area] = {}
-        for focus in emphasis:
-            typing_tests[level][area][focus] = {}
-            for t in types:
-                typing_tests[level][area][focus][t] = generate_text(area if focus == area else "Overall_keyboard", t)
+    typing_text[level] = {}
+    for keys in keys_options:
+        typing_text[level][keys] = {}
+        for emphasis in emphasis_options:
+            typing_text[level][keys][emphasis] = {}
+            for randreal in randreal_options:
+                if randreal == "Random":
+                    val = random_string(keyboard_rows[keys], level_lengths[level])
+                else:
+                    val = reallife_string(reallife_sentences, keyboard_rows[keys])
+                typing_text[level][keys][emphasis][randreal] = val
 
-# Output a sample to check
-
-# Save to JSON file (if needed)
-with open('typing_test.json', 'w') as f:
-    json.dump(typing_tests, f)
-
-
+# Save to JSON
+with open("typing_text.json", "w", encoding="utf-8") as f:
+    json.dump(typing_text, f, indent=2, ensure_ascii=False)
