@@ -52,7 +52,6 @@ Setting up the test requires you to specify the below parameters:
 https://drive.google.com/file/d/1atLFGKwHfts2QO8BezaUkRquYBr2Dckb/view?usp=sharing
 
 
-img(./public/images/readmeimage.png)
 
 
 
